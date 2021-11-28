@@ -1,8 +1,9 @@
-package ru.altf000.adapterdelegates
+package ru.altf000.adapterdelegates.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import ru.altf000.adapterdelegates.base.AdapterDelegate
+import ru.altf000.adapterdelegates.items.HeaderItem
 import ru.altf000.adapterdepegates.R
 import ru.altf000.adapterdepegates.databinding.LayoutItemHeaderBinding
 
@@ -10,9 +11,8 @@ class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBindin
 
     override val viewType = R.layout.layout_item_header
 
-    override fun createBinding(parent: ViewGroup) = LayoutItemHeaderBinding.inflate(
-        LayoutInflater.from(parent.context), parent, false
-    )
+    override fun createBinding(parent: ViewGroup) =
+        LayoutItemHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
     override fun onBind(item: HeaderItem, binding: LayoutItemHeaderBinding) {
         binding.text.text = item.text

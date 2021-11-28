@@ -2,8 +2,7 @@ package ru.altf000.adapterdelegates.base
 
 typealias DItem = AdapterDelegateItem
 
-interface AdapterDelegateItem {
-    val viewType: Int
-    val identifier: Any
-    val data: Any
+abstract class AdapterDelegateItem {
+    abstract val identifier: Any
+    abstract val data: Any
 }

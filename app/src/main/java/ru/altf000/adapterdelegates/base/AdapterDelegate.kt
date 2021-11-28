@@ -3,9 +3,9 @@ package ru.altf000.adapterdelegates.base
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 
-typealias DAdapter = AdapterDelegate<DItem, ViewBinding>
+typealias DAdapter = AdapterDelegate<*, *>
 
-abstract class AdapterDelegate<M : DItem, VB : ViewBinding> {
+abstract class AdapterDelegate<M, VB> where M : DItem, VB : ViewBinding {
     abstract val viewType: Int
     open fun onViewAttachedToWindow(binding: VB) {}
     abstract fun createBinding(parent: ViewGroup): ViewBinding

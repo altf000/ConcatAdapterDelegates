@@ -29,9 +29,9 @@ class MainViewModel : ViewModel() {
         emptyList()
     ).apply {
         value = mutableListOf<AdapterDelegateItem>().apply {
-            add(ContentItem("ContentItems, ContentViewHolder 1"))
-            add(ContentItem("ContentItems, ContentViewHolder 2"))
-            add(ContentItem("ContentItems, ContentViewHolder 3"))
+            repeat(50) {
+                add(ContentItem("ContentItems, ContentViewHolder ${it + 1}"))
+            }
         }
     }
     val contentItems = _contentItems.asStateFlow()

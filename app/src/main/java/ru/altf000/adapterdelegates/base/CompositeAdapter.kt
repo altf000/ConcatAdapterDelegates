@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.viewbinding.ViewBinding
 
-class CompositeAdapter(private val delegateSelector: AdapterDelegateSelector) :
+class CompositeAdapter(private val delegateSelector: AdapterDelegateSelector<DItem>) :
     ListAdapter<DItem, BindingVH>(AdapterDelegateDiffCallback()) {
 
     private val delegatesMap = mutableMapOf<Int, DAdapter>()

@@ -10,6 +10,7 @@ import ru.altf000.adapterdepegates.databinding.LayoutItemFooterBinding
 class FooterAdapterDelegate : AdapterDelegate<FooterItem, LayoutItemFooterBinding>() {
 
     override val viewType = R.layout.layout_item_footer
+    override val itemClass = FooterItem::class.java
 
     override fun createBinding(parent: ViewGroup) =
         LayoutItemFooterBinding.inflate(LayoutInflater.from(parent.context), parent, false)

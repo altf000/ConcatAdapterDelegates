@@ -29,7 +29,7 @@ class MainViewModel : ViewModel() {
         emptyList()
     ).apply {
         value = mutableListOf<AdapterDelegateItem>().apply {
-            repeat(50) {
+            repeat(3) {
                 add(ContentItem("ContentItems, ContentViewHolder ${it + 1}"))
             }
         }

@@ -9,16 +9,30 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class AdapterDelegateBuilder {
+fun adapterDelegates(
+    lifecycleOwner: LifecycleOwner,
+    classSelector: AdapterDelegateClassSelector,
+    block: AdapterDelegateBuilder.() -> Unit
+): ConcatAdapter {
+    val adapterDelegate = AdapterDelegateBuilder(lifecycleOwner, classSelector)
+    block(adapterDelegate)
+    return adapterDelegate.build()
+}
+
+class AdapterDelegateBuilder(
+    private val lifecycleOwner: LifecycleOwner,
+    private val selector: AdapterDelegateClassSelector
+) {
 
     private val adapterItems = mutableListOf<Flow<List<DItem>>>()
 
-    fun addItems(items: Flow<List<DItem>>): AdapterDelegateBuilder {
-        adapterItems.add(items)
-        return this
+    fun items(vararg items: Flow<List<DItem>>) {
+        items.forEach {
+            adapterItems.add(it)
+        }
     }
 
-    fun build(lifecycleOwner: LifecycleOwner, selector: AdapterDelegateClassSelector): ConcatAdapter {
+    fun build(): ConcatAdapter {
         val adapter = ConcatAdapter(ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build())
         adapterItems.forEach { flow ->
             val compositeAdapter = CompositeAdapter(selector)

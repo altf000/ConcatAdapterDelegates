@@ -2,30 +2,66 @@ package ru.altf000.adapterdelegates.base
 
 import androidx.viewbinding.ViewBinding
 
+fun delegateClassSelector(block: AdapterDelegateClassSelector.() -> Unit): AdapterDelegateClassSelector {
+    val selector = AdapterDelegateClassSelector()
+    block(selector)
+    return selector
+}
+
 abstract class AdapterDelegateSelector<M : DItem> {
     abstract fun getDelegate(item: M): DAdapter
 }
 
 class AdapterDelegateClassSelector : AdapterDelegateSelector<DItem>() {
 
-    private val delegatesMap = mutableMapOf<Class<out DItem>, Any>()
+    private val delegatesList = mutableListOf<Any>()
+    private val cachedDelegatesMap = mutableMapOf<Class<out DItem>, DAdapter>()
 
-    fun addDelegate(clazz: Class<out DItem>, delegate: AdapterDelegate<out DItem, out ViewBinding>) {
-        delegatesMap[clazz] = delegate
+    fun delegate(delegate: AdapterDelegate<out DItem, out ViewBinding>) {
+        if (!delegatesList.contains(delegate)) {
+            delegatesList.add(delegate)
+        }
     }
 
-    fun addDelegateSelector(clazz: Class<out DItem>, delegateSelector: AdapterDelegateSelector<out DItem>) {
-        delegatesMap[clazz] = delegateSelector
+    fun delegateSelector(delegateSelector: AdapterDelegateSelector<out DItem>) {
+        if (!delegatesList.contains(delegateSelector)) {
+            delegatesList.add(delegateSelector)
+        }
     }
 
     override fun getDelegate(item: DItem): DAdapter {
-        val clazz = item::class.java
-        val delegate = delegatesMap[clazz] ?: error("Unsupported delegate for class: $clazz")
-        return if (delegate is AdapterDelegateSelector<*>) {
-            @Suppress("UNCHECKED_CAST")
-            (delegate as AdapterDelegateSelector<DItem>).getDelegate(item)
-        } else {
-            delegate as DAdapter
+        val itemClass = item::class.java
+        cachedDelegatesMap[itemClass]?.let { delegate ->
+            return delegate
+        }
+        delegatesList.forEach {
+            getDelegate(item, it)?.let { delegate ->
+                return delegate
+            }
+        }
+        error("Could not find delegate for class ${item::class.java}")
+    }
+
+    private fun getDelegate(item: DItem, delegate: Any): DAdapter? {
+        val itemClass = item::class.java
+        return when (delegate) {
+            is AdapterDelegateSelector<*> -> {
+                @Suppress("UNCHECKED_CAST")
+                val selector = delegate as AdapterDelegateSelector<DItem>
+                val innerDelegate = selector.getDelegate(item)
+                if (innerDelegate.itemClass == itemClass) {
+                    innerDelegate
+                } else {
+                    null
+                }
+            }
+            is DAdapter -> if (delegate.itemClass == itemClass) {
+                cachedDelegatesMap[itemClass] = delegate
+                delegate
+            } else {
+                null
+            }
+            else -> null
         }
     }
 }

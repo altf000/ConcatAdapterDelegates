@@ -10,6 +10,7 @@ import ru.altf000.adapterdepegates.databinding.LayoutItemContentBinding
 class ContentAdapterDelegate : AdapterDelegate<ContentItem, LayoutItemContentBinding>() {
 
     override val viewType = R.layout.layout_item_content
+    override val itemClass = ContentItem::class.java
 
     override fun createBinding(parent: ViewGroup) =
         LayoutItemContentBinding.inflate(LayoutInflater.from(parent.context), parent, false)

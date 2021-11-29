@@ -10,6 +10,7 @@ import ru.altf000.adapterdepegates.databinding.LayoutItemHeaderBinding
 class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBinding>() {
 
     override val viewType = R.layout.layout_item_header
+    override val itemClass = HeaderItem::class.java
 
     override fun createBinding(parent: ViewGroup) =
         LayoutItemHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)

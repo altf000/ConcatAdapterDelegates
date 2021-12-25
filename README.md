@@ -149,7 +149,7 @@ class MainViewModel : ViewModel() {
 }
 ```
 
-##### If we need to use a Jetpack Paging we need to create a PagingDataSource and declare a PagingData in the ViewModel. For example:
+### 5. If we need to use a Jetpack Paging we need to create a PagingDataSource and declare a PagingData in the ViewModel
 
 ```kotlin
 class PagingDataSource : PagingSource<Int, DItem>() {
@@ -185,7 +185,7 @@ class PagingDataSource : PagingSource<Int, DItem>() {
 ) { PagingDataSource() }.flow
 ```
 
-### 5. Finally create the adapter, register delegates and and bind it to the RecyclerView
+### 6. Finally create the adapter, register delegates and and bind it to the RecyclerView
 
 ```kotlin
 override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -209,6 +209,6 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 }
 ```
 
-### 6. Result
+### 7. Result
 
 ![N|Solid](https://cdn1.savepice.ru/uploads/2021/12/25/8e918caa1da6b936b970c89b38be971a-full.png)

@@ -209,11 +209,7 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             addDelegate(FooterAdapterDelegate())
         }
     ) {
-        addAdapters(
-            viewModel.list1,
-            viewModel.list2,
-            viewModel.list3
-        )
+        addAdapters(viewModel.list1, viewModel.list2, viewModel.list3)
         addPagingAdapter(viewModel.pager)
     }
 }

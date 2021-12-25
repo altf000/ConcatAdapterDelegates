@@ -5,7 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ru.altf000.adapterdelegates.adapterdelegates.AdapterDelegateItem
 import ru.altf000.adapterdelegates.adapterdelegates.DItem
 import ru.altf000.adapterdelegates.items.ContentItem
 import ru.altf000.adapterdelegates.items.FooterItem

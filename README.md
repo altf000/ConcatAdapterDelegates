@@ -184,11 +184,15 @@ class PagingDataSource : PagingSource<Int, DItem>() {
 ##### And declare PagingData flow in the ViewModel
 
 ```kotlin
-    val pager = Pager(
+val pager = Pager(
     config = PagingConfig(
-        pageSize = 20
+        pageSize = PAGE_SIZE
     )
 ) { PagingDataSource() }.flow
+
+companion object {
+    private const val PAGE_SIZE = 10
+}
 ```
 
 ### 6. Finally create the adapter, register delegates and and bind it to the RecyclerView

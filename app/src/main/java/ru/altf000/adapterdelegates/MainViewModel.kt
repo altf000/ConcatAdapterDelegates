@@ -13,39 +13,31 @@ import ru.altf000.adapterdelegates.items.HeaderItem
 
 class MainViewModel : ViewModel() {
 
-    private val _list1 = MutableStateFlow<List<DItem>>(
-        emptyList()
-    ).apply {
-        value = mutableListOf<DItem>().apply {
+    private val _list1 = MutableStateFlow(
+        mutableListOf<DItem>().apply {
             add(HeaderItem("List 1"))
             add(ContentItem("1"))
             add(FooterItem)
         }
-    }
+    )
     val list1 = _list1.asStateFlow()
 
-    private val _list2 = MutableStateFlow<List<DItem>>(
-        emptyList()
-    ).apply {
-        value = mutableListOf<AdapterDelegateItem>().apply {
+    private val _list2 = MutableStateFlow(
+        mutableListOf<AdapterDelegateItem>().apply {
             add(HeaderItem("List 2"))
-            repeat(3) {
-                add(ContentItem("${it + 1}"))
-            }
+            repeat(3) { add(ContentItem("${it + 1}")) }
             add(FooterItem)
         }
-    }
+    )
     val list2 = _list2.asStateFlow()
 
     private val _list3 = MutableStateFlow<List<DItem>>(
-        emptyList()
-    ).apply {
         value = mutableListOf<DItem>().apply {
             add(HeaderItem("List 3"))
             add(ContentItem("3"))
             add(FooterItem)
         }
-    }
+    )
     val list3 = _list3.asStateFlow()
 
     val pager = Pager(

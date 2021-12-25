@@ -1,6 +1,6 @@
 # Concat Adapter Delegates
 
-A simple implementation of the Adapter Delegates pattern based on the ConcatAdapter
+A simple implementation of the Adapter Delegates pattern based on the Kotlin Flows and ConcatAdapter
 
 ## Features
 
@@ -11,20 +11,35 @@ A simple implementation of the Adapter Delegates pattern based on the ConcatAdap
 
 ## How to use?
 
-### 1. Create delegate item classes with identifier and any data
+### 1. Create delegate item classes with a identifier and any data
+
 ```kotlin
 data class HeaderItem(val text: String) : DItem() {
-    override val identifier: Any = UUID.randomUUID().toString()
-    override val data: Any = text
+    override val identifier = text.hashCode()
+    override val data = text
 }
 ```
+
 ```kotlin
 data class ContentItem(val text: String) : DItem() {
-    override val identifier: Any = UUID.randomUUID().toString()
-    override val data: Any = text
+    override val identifier = text.hashCode()
+    override val data = text
 }
+
 ```
+
+```kotlin
+object FooterItem : DItem() {
+    override val identifier = FooterItem::javaClass.hashCode()
+    override val data: Any? = null
+}
+
+```
+
 ### 2. Create delegate adapters and bind them with delegate items
+
+#### Header:
+
 ```kotlin
 class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBinding>() {
 
@@ -43,74 +58,157 @@ class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBindin
     }
 }
 ```
-```kotlin
-class ContentAdapterDelegate : AdapterDelegate<ContentItem, LayoutItemContentBinding>() {
 
-    override val viewType = R.layout.layout_item_content
+#### Content:
+
+```kotlin
+class ContentAdapterDelegate1 : AdapterDelegate<ContentItem, LayoutItemContent1Binding>() {
+
+    override val viewType = R.layout.layout_item_content1
     override val itemClass = ContentItem::class.java
 
     override fun createBinding(parent: ViewGroup) =
-        LayoutItemContentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        LayoutItemContent1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-    override fun onBind(item: ContentItem, binding: LayoutItemContentBinding, position: Int, payloads: List<Any>) {
+    override fun onBind(item: ContentItem, binding: LayoutItemContent1Binding, position: Int, payloads: List<Any>) {
         binding.text.text = item.text
     }
 
-    override fun onUnbind(binding: LayoutItemContentBinding) {
+    override fun onUnbind(binding: LayoutItemContent1Binding) {
         binding.text.text = null
     }
 }
 ```
-### 3. Now we can declare an unlimited lists in the ViewModel
+
+> Note: Also create ContentAdapterDelegate2 and ContentAdapterDelegate3 which will display different view holders for the same class
+
+#### Footer:
+
+```kotlin
+class FooterAdapterDelegate : AdapterDelegate<FooterItem, LayoutItemFooterBinding>() {
+
+    override val viewType = R.layout.layout_item_footer
+    override val itemClass = FooterItem::class.java
+
+    override fun createBinding(parent: ViewGroup) =
+        LayoutItemFooterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+    override fun onBind(item: FooterItem, binding: LayoutItemFooterBinding, position: Int, payloads: List<Any>) {}
+
+    override fun onUnbind(binding: LayoutItemFooterBinding) {}
+}
+```
+
+### 3. Create ContentAdapterDelegateSelector which will return different delegates for the Content class depending on our logic
+
+```kotlin
+class ContentAdapterDelegateSelector : AdapterDelegatesSelector<ContentItem>() {
+
+    override val itemClass = ContentItem::class.java
+
+    override fun getDelegate(item: ContentItem) = when {
+        item.text.contains("1") -> ContentAdapterDelegate1()
+        item.text.contains("2") -> ContentAdapterDelegate2()
+        item.text.contains("3") -> ContentAdapterDelegate3()
+        else -> FallbackAdapterDelegate()
+    }
+}
+```
+
+### 4. Now we can declare an lists in the ViewModel
+
 ```kotlin
 class MainViewModel : ViewModel() {
 
-    private val _firstList = MutableStateFlow(
-        listOf(
-            HeaderItem("firstList, HeaderViewHolder"),
-            ContentItem("firstList, ContentViewHolder")
-        )
+    private val _list1 = MutableStateFlow(
+        mutableListOf<DItem>().apply {
+            add(HeaderItem("List 1"))
+            add(ContentItem("1"))
+            add(FooterItem)
+        }
     )
-    val firstList = _firstList.asStateFlow()
+    val list1 = _list1.asStateFlow()
 
-    private val _secondList = MutableStateFlow(
-        listOf(
-            HeaderItem("secondList, HeaderViewHolder"),
-            ContentItem("secondList, ContentViewHolder"),
-            HeaderItem("secondList, HeaderViewHolder"),
-            ContentItem("secondList, ContentViewHolder")
-        )
+    private val _list2 = MutableStateFlow(
+        mutableListOf<AdapterDelegateItem>().apply {
+            add(HeaderItem("List 2"))
+            repeat(3) { add(ContentItem("${it + 1}")) }
+            add(FooterItem)
+        }
     )
-    val secondList = _secondList.asStateFlow()
+    val list2 = _list2.asStateFlow()
 
-    private val _thirdList = MutableStateFlow(
-        listOf(
-            HeaderItem("thirdList, HeaderViewHolder"),
-            ContentItem("thirdList, ContentViewHolder")
-        )
+    private val _list3 = MutableStateFlow<List<DItem>>(
+        value = mutableListOf<DItem>().apply {
+            add(HeaderItem("List 3"))
+            add(ContentItem("3"))
+            add(FooterItem)
+        }
     )
-    val thirdList = _thirdList.asStateFlow()
+    val list3 = _list3.asStateFlow()
 }
 ```
-### 4. Finally create the adapter and bind it to the RecyclerView
+
+##### If we need to use a Jetpack Paging we need to create a PagingDataSource and declare a PagingData in the ViewModel. For example:
+
+```kotlin
+class PagingDataSource : PagingSource<Int, DItem>() {
+
+    private var page: Int = 0
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DItem> {
+        return LoadResult.Page(
+            data = mutableListOf<DItem>().apply {
+                if (page == 0) {
+                    add(HeaderItem("PagingList"))
+                }
+                (0 until params.loadSize).forEach {
+                    add(ContentItem("page = ${page}, item = $it"))
+                }
+            },
+            prevKey = null,
+            nextKey = ++page
+        )
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, DItem>) = 0
+}
+```
+
+##### And declare PagingData flow in the ViewModel
+
+```kotlin
+    val pager = Pager(
+    config = PagingConfig(
+        pageSize = 20
+    )
+) { PagingDataSource() }.flow
+```
+
+### 5. Finally create the adapter, register delegates and and bind it to the RecyclerView
+
 ```kotlin
 override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.recyclerView.adapter = createAdapter(
-            viewLifecycleOwner,
-            binding.recyclerView,
-            delegateSelector {
-                addDelegate(HeaderAdapterDelegate())
-                addDelegate(ContentAdapterDelegate())
-            }
-        ) {
-            addAdapters(
-                viewModel.firstList,
-                viewModel.secondList,
-                viewModel.thirdList
-            )
+    super.onViewCreated(view, savedInstanceState)
+    binding.recyclerView.adapter = createAdapter(
+        viewLifecycleOwner,
+        binding.recyclerView,
+        delegateSelector {
+            addDelegate(HeaderAdapterDelegate())
+            addDelegateSelector(ContentAdapterDelegateSelector())
+            addDelegate(FooterAdapterDelegate())
         }
+    ) {
+        addAdapters(
+            viewModel.list1,
+            viewModel.list2,
+            viewModel.list3
+        )
+        addPagingAdapter(viewModel.pager)
     }
+}
 ```
-### 5. Result
+
+### 6. Result
+
 ![N|Solid](https://cdn1.savepice.ru/uploads/2021/12/25/8e918caa1da6b936b970c89b38be971a-full.png)

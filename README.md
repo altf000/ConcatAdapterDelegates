@@ -13,12 +13,16 @@ A simple implementation of the Adapter Delegates pattern based on the Kotlin Flo
 
 ### 1. Create delegate item classes with a identifier and any data
 
+##### HeaderItem:
+
 ```kotlin
 data class HeaderItem(val text: String) : DItem() {
     override val identifier = text.hashCode()
     override val data = text
 }
 ```
+
+##### ContentItem:
 
 ```kotlin
 data class ContentItem(val text: String) : DItem() {
@@ -27,6 +31,8 @@ data class ContentItem(val text: String) : DItem() {
 }
 
 ```
+
+##### FooterItem:
 
 ```kotlin
 object FooterItem : DItem() {
@@ -38,7 +44,7 @@ object FooterItem : DItem() {
 
 ### 2. Create delegate adapters and bind them with delegate items
 
-#### Header:
+##### HeaderDelegate:
 
 ```kotlin
 class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBinding>() {
@@ -59,7 +65,7 @@ class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBindin
 }
 ```
 
-#### Content:
+##### ContentDelegate:
 
 ```kotlin
 class ContentAdapterDelegate1 : AdapterDelegate<ContentItem, LayoutItemContent1Binding>() {
@@ -82,7 +88,7 @@ class ContentAdapterDelegate1 : AdapterDelegate<ContentItem, LayoutItemContent1B
 
 > Note: Also create ContentAdapterDelegate2 and ContentAdapterDelegate3 which will display different view holders for the same class
 
-#### Footer:
+##### FooterDelegate:
 
 ```kotlin
 class FooterAdapterDelegate : AdapterDelegate<FooterItem, LayoutItemFooterBinding>() {
@@ -115,7 +121,7 @@ class ContentAdapterDelegateSelector : AdapterDelegatesSelector<ContentItem>() {
 }
 ```
 
-### 4. Now we can declare an lists in the ViewModel
+### 4. Declare an lists in the ViewModel
 
 ```kotlin
 class MainViewModel : ViewModel() {
@@ -149,7 +155,7 @@ class MainViewModel : ViewModel() {
 }
 ```
 
-### 5. If we need to use a Jetpack Paging we need to create a PagingDataSource and declare a PagingData in the ViewModel
+### 5. To use a Jetpack Paging we need to create a PagingDataSource and declare a PagingData flow in the ViewModel
 
 ```kotlin
 class PagingDataSource : PagingSource<Int, DItem>() {

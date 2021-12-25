@@ -1,11 +1,10 @@
 package ru.altf000.adapterdelegates
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import ru.altf000.adapterdelegates.adapterdelegates.AdapterDelegateItem
 import ru.altf000.adapterdelegates.adapterdelegates.DItem
 import ru.altf000.adapterdelegates.items.ContentItem
@@ -14,59 +13,48 @@ import ru.altf000.adapterdelegates.items.HeaderItem
 
 class MainViewModel : ViewModel() {
 
-    private val _headerItems = MutableStateFlow<List<DItem>>(
+    private val _list1 = MutableStateFlow<List<DItem>>(
         emptyList()
     ).apply {
         value = mutableListOf<DItem>().apply {
-            add(HeaderItem("HeaderItems, HeaderViewHolder 1"))
-            add(HeaderItem("HeaderItems, HeaderViewHolder 2"))
-            add(HeaderItem("HeaderItems, HeaderViewHolder 3"))
-            add(ContentItem("HeaderItems, ContentViewHolder 4"))
+            add(HeaderItem("List 1"))
+            add(ContentItem("1"))
+            add(FooterItem)
         }
     }
-    val headerItems = _headerItems.asStateFlow()
+    val list1 = _list1.asStateFlow()
 
-    private val _contentItems = MutableStateFlow<List<DItem>>(
+    private val _list2 = MutableStateFlow<List<DItem>>(
         emptyList()
     ).apply {
         value = mutableListOf<AdapterDelegateItem>().apply {
+            add(HeaderItem("List 2"))
             repeat(3) {
-                add(ContentItem("ContentItems, ContentViewHolder ${it + 1}"))
+                add(ContentItem("${it + 1}"))
             }
+            add(FooterItem)
         }
     }
-    val contentItems = _contentItems.asStateFlow()
+    val list2 = _list2.asStateFlow()
 
-    private val _footerItems = MutableStateFlow<List<DItem>>(
+    private val _list3 = MutableStateFlow<List<DItem>>(
         emptyList()
     ).apply {
         value = mutableListOf<DItem>().apply {
-            add(FooterItem("FooterItems, FooterViewHolder 1"))
-            add(FooterItem("FooterItems, FooterViewHolder 2"))
-            add(FooterItem("FooterItems, FooterViewHolder 3"))
-            add(ContentItem("FooterItems, ContentViewHolder 4"))
+            add(HeaderItem("List 3"))
+            add(ContentItem("3"))
+            add(FooterItem)
         }
     }
-    val footerItems = _footerItems.asStateFlow()
+    val list3 = _list3.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            while (true) {
-                delay(2000)
-                _headerItems.value = _headerItems.value.shuffled()
-            }
-        }
-        viewModelScope.launch {
-            while (true) {
-                delay(5000)
-                _contentItems.value = _contentItems.value.shuffled()
-            }
-        }
-        viewModelScope.launch {
-            while (true) {
-                delay(8000)
-                _footerItems.value = _footerItems.value.shuffled()
-            }
-        }
+    val pager = Pager(
+        config = PagingConfig(
+            pageSize = PAGE_SIZE
+        )
+    ) { PagingDataSource() }.flow
+
+    companion object {
+        private const val PAGE_SIZE = 10
     }
 }

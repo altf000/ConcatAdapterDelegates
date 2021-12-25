@@ -8,9 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import ru.altf000.adapterdelegates.adapterdelegates.createAdapter
 import ru.altf000.adapterdelegates.adapterdelegates.delegateSelector
-import ru.altf000.adapterdelegates.adapters.ContentAdapterDelegate
-import ru.altf000.adapterdelegates.adapters.HeaderAdapterDelegate
-import ru.altf000.adapterdelegates.adapters.footer.FooterAdapterSelector
+import ru.altf000.adapterdelegates.adapters.*
+import ru.altf000.adapterdelegates.adapters.content.ContentAdapterDelegateSelector
 import ru.altf000.adapterdepegates.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
@@ -36,15 +35,16 @@ class MainFragment : Fragment() {
             binding.recyclerView,
             delegateSelector {
                 addDelegate(HeaderAdapterDelegate())
-                addDelegate(ContentAdapterDelegate())
-                addDelegateSelector(FooterAdapterSelector())
+                addDelegateSelector(ContentAdapterDelegateSelector())
+                addDelegate(FooterAdapterDelegate())
             }
         ) {
             addAdapters(
-                viewModel.headerItems,
-                viewModel.contentItems,
-                viewModel.footerItems
+                viewModel.list1,
+                viewModel.list2,
+                viewModel.list3
             )
+            addPagingAdapter(viewModel.pager)
         }
     }
 }

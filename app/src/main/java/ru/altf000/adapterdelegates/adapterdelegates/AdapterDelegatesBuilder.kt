@@ -2,6 +2,7 @@ package ru.altf000.adapterdelegates.adapterdelegates
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,7 +46,8 @@ class AdapterDelegateBuilder(
 
     fun addPagingAdapter(
         items: Flow<PagingData<out DItem>>,
-        onItemsLoadedAction: (List<DItem>) -> Unit
+        networkStateAdapter: LoadStateAdapter<*>? = null,
+        onItemsLoadedAction: ((List<DItem>) -> Unit)? = null
     ): CompositePagingAdapter {
 
         if (concatAdapter.adapters.find { it is CompositePagingAdapter } != null) {
@@ -53,8 +55,6 @@ class AdapterDelegateBuilder(
         }
 
         val pagingAdapter = CompositePagingAdapter(lifecycleOwner.lifecycleScope, selector)
-        val networkStateAdapter = NetworkStateAdapter(pagingAdapter)
-        pagingAdapter.addLoadStateListener { networkStateAdapter.loadState = it.append }
 
         items.collectLatest(lifecycleOwner, Dispatchers.Default) { pagingData ->
             @Suppress("UNCHECKED_CAST")
@@ -62,12 +62,19 @@ class AdapterDelegateBuilder(
         }
 
         pagingAdapter.onPagesUpdatedFlow.collectLatest(lifecycleOwner) {
-            onItemsLoadedAction(pagingAdapter.snapshot().items)
+            onItemsLoadedAction?.let {
+                it(pagingAdapter.snapshot().items)
+            }
         }
 
         with(concatAdapter) {
             addAdapter(pagingAdapter)
-            addAdapter(networkStateAdapter)
+            networkStateAdapter?.let {
+                pagingAdapter.addLoadStateListener { states ->
+                    networkStateAdapter.loadState = states.append
+                }
+                addAdapter(it)
+            }
         }
 
         return pagingAdapter

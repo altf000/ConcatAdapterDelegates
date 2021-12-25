@@ -5,10 +5,13 @@ import androidx.viewbinding.ViewBinding
 typealias DSelector = AdapterDelegatesSelector<DItem>
 
 abstract class AdapterDelegatesSelector<M : DItem> {
+    abstract val itemClass: Class<M>
     abstract fun getDelegate(item: M): DAdapter
 }
 
 class AdapterDelegatesSelectorImpl : AdapterDelegatesSelector<DItem>() {
+
+    override val itemClass = DItem::class.java
 
     private val delegatesList = mutableListOf<Any>()
     private val cachedDelegatesMap = mutableMapOf<Class<out DItem>, DAdapter>()
@@ -44,9 +47,8 @@ class AdapterDelegatesSelectorImpl : AdapterDelegatesSelector<DItem>() {
             is AdapterDelegatesSelector<*> -> {
                 @Suppress("UNCHECKED_CAST")
                 val selector = delegate as DSelector
-                val innerDelegate = selector.getDelegate(item)
-                if (innerDelegate.itemClass == itemClass) {
-                    innerDelegate
+                if (delegate.itemClass == itemClass) {
+                    selector.getDelegate(item)
                 } else {
                     null
                 }

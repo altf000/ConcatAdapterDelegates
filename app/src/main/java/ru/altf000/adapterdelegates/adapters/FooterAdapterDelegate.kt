@@ -1,4 +1,4 @@
-package ru.altf000.adapterdelegates.adapters.footer
+package ru.altf000.adapterdelegates.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,11 +15,7 @@ class FooterAdapterDelegate : AdapterDelegate<FooterItem, LayoutItemFooterBindin
     override fun createBinding(parent: ViewGroup) =
         LayoutItemFooterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-    override fun onBind(item: FooterItem, binding: LayoutItemFooterBinding, position: Int, payloads: List<Any>) {
-        binding.text.text = item.text
-    }
+    override fun onBind(item: FooterItem, binding: LayoutItemFooterBinding, position: Int, payloads: List<Any>) {}
 
-    override fun onUnbind(binding: LayoutItemFooterBinding) {
-        binding.text.text = null
-    }
+    override fun onUnbind(binding: LayoutItemFooterBinding) {}
 }

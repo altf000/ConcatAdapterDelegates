@@ -113,4 +113,4 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     }
 ```
 ### 5. Result
-[![N|Solid](https://i.ibb.co/ZHrTYw8/Concat-Adapter-Delegates-Main-View-Model-kt-Concat-Adapter-Delegates-app-2021-12-25-12-47-05-1.png)]
+![N|Solid](https://i.ibb.co/ZHrTYw8/Concat-Adapter-Delegates-Main-View-Model-kt-Concat-Adapter-Delegates-app-2021-12-25-12-47-05-1.png)

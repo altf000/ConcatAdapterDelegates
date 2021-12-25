@@ -218,4 +218,6 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 ### 7. Result
 
-![Video](https://user-images.githubusercontent.com/31753662/147386748-891bb3e6-1b5a-4ac1-9825-40baf5085a6d.mp4)
+https://user-images.githubusercontent.com/31753662/147386896-082b06d2-fe80-4eba-a129-f17ca43fd695.mp4
+
+

@@ -105,7 +105,7 @@ class FooterAdapterDelegate : AdapterDelegate<FooterItem, LayoutItemFooterBindin
 }
 ```
 
-### 3. Create ContentAdapterDelegateSelector which will return different delegates for the Content class depending on our logic
+### 3. Create ContentAdapterDelegateSelector which will return different delegates for the Content class
 
 ```kotlin
 class ContentAdapterDelegateSelector : AdapterDelegatesSelector<ContentItem>() {
@@ -121,7 +121,7 @@ class ContentAdapterDelegateSelector : AdapterDelegatesSelector<ContentItem>() {
 }
 ```
 
-### 4. Declare an lists in the ViewModel
+### 4. Declare the lists in the ViewModel
 
 ```kotlin
 class MainViewModel : ViewModel() {
@@ -181,7 +181,7 @@ class PagingDataSource : PagingSource<Int, DItem>() {
 }
 ```
 
-And declare PagingData flow in the ViewModel
+And PagingData flow in the ViewModel
 
 ```kotlin
 val pager = Pager(
@@ -195,7 +195,7 @@ companion object {
 }
 ```
 
-### 6. Finally create the adapter, register delegates and and bind it to the RecyclerView
+### 6. Finally register delegates and create adapter
 
 ```kotlin
 override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

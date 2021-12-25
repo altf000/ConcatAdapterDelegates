@@ -1,9 +1,9 @@
-package ru.altf000.adapterdelegates.base
+package ru.altf000.adapterdelegates.adapterdelegates
 
 import androidx.recyclerview.widget.DiffUtil
 import java.util.*
 
-class AdapterDelegateDiffCallback : DiffUtil.ItemCallback<DItem>() {
+class AdapterDelegatesDiffCallback : DiffUtil.ItemCallback<DItem>() {
 
     override fun areItemsTheSame(oldItem: DItem, newItem: DItem): Boolean =
         oldItem::class == newItem::class && oldItem.identifier == newItem.identifier

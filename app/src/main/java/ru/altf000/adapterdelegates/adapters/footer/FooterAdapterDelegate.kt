@@ -2,7 +2,7 @@ package ru.altf000.adapterdelegates.adapters.footer
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import ru.altf000.adapterdelegates.base.AdapterDelegate
+import ru.altf000.adapterdelegates.adapterdelegates.AdapterDelegate
 import ru.altf000.adapterdelegates.items.FooterItem
 import ru.altf000.adapterdepegates.R
 import ru.altf000.adapterdepegates.databinding.LayoutItemFooterBinding
@@ -15,7 +15,7 @@ class FooterAdapterDelegate : AdapterDelegate<FooterItem, LayoutItemFooterBindin
     override fun createBinding(parent: ViewGroup) =
         LayoutItemFooterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-    override fun onBind(item: FooterItem, binding: LayoutItemFooterBinding) {
+    override fun onBind(item: FooterItem, binding: LayoutItemFooterBinding, position: Int, payloads: List<Any>) {
         binding.text.text = item.text
     }
 

@@ -1,29 +1,25 @@
-package ru.altf000.adapterdelegates.base
+package ru.altf000.adapterdelegates.adapterdelegates
 
 import androidx.viewbinding.ViewBinding
 
-fun delegateClassSelector(block: AdapterDelegateClassSelector.() -> Unit): AdapterDelegateClassSelector {
-    val selector = AdapterDelegateClassSelector()
-    block(selector)
-    return selector
-}
+typealias DSelector = AdapterDelegatesSelector<DItem>
 
-abstract class AdapterDelegateSelector<M : DItem> {
+abstract class AdapterDelegatesSelector<M : DItem> {
     abstract fun getDelegate(item: M): DAdapter
 }
 
-class AdapterDelegateClassSelector : AdapterDelegateSelector<DItem>() {
+class AdapterDelegatesSelectorImpl : AdapterDelegatesSelector<DItem>() {
 
     private val delegatesList = mutableListOf<Any>()
     private val cachedDelegatesMap = mutableMapOf<Class<out DItem>, DAdapter>()
 
-    fun delegate(delegate: AdapterDelegate<out DItem, out ViewBinding>) {
+    fun addDelegate(delegate: AdapterDelegate<out DItem, out ViewBinding>) {
         if (!delegatesList.contains(delegate)) {
             delegatesList.add(delegate)
         }
     }
 
-    fun delegateSelector(delegateSelector: AdapterDelegateSelector<out DItem>) {
+    fun addDelegateSelector(delegateSelector: AdapterDelegatesSelector<out DItem>) {
         if (!delegatesList.contains(delegateSelector)) {
             delegatesList.add(delegateSelector)
         }
@@ -39,15 +35,15 @@ class AdapterDelegateClassSelector : AdapterDelegateSelector<DItem>() {
                 return delegate
             }
         }
-        error("Could not find delegate for class ${item::class.java}")
+        return FALLBACK_ADAPTER
     }
 
     private fun getDelegate(item: DItem, delegate: Any): DAdapter? {
         val itemClass = item::class.java
         return when (delegate) {
-            is AdapterDelegateSelector<*> -> {
+            is AdapterDelegatesSelector<*> -> {
                 @Suppress("UNCHECKED_CAST")
-                val selector = delegate as AdapterDelegateSelector<DItem>
+                val selector = delegate as DSelector
                 val innerDelegate = selector.getDelegate(item)
                 if (innerDelegate.itemClass == itemClass) {
                     innerDelegate
@@ -63,5 +59,9 @@ class AdapterDelegateClassSelector : AdapterDelegateSelector<DItem>() {
             }
             else -> null
         }
+    }
+
+    companion object {
+        private val FALLBACK_ADAPTER = FallbackAdapterDelegate()
     }
 }

@@ -1,4 +1,4 @@
-package ru.altf000.adapterdelegates.base
+package ru.altf000.adapterdelegates.adapterdelegates
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding

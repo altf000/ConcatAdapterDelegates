@@ -1,6 +1,6 @@
 package ru.altf000.adapterdelegates.items
 
-import ru.altf000.adapterdelegates.base.DItem
+import ru.altf000.adapterdelegates.adapterdelegates.DItem
 import java.util.*
 
 data class HeaderItem(val text: String) : DItem() {

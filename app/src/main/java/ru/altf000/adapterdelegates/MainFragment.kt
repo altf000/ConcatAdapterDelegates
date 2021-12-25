@@ -8,7 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import ru.altf000.adapterdelegates.adapterdelegates.createAdapter
 import ru.altf000.adapterdelegates.adapterdelegates.delegateSelector
-import ru.altf000.adapterdelegates.adapters.*
+import ru.altf000.adapterdelegates.adapters.FooterAdapterDelegate
+import ru.altf000.adapterdelegates.adapters.HeaderAdapterDelegate
 import ru.altf000.adapterdelegates.adapters.content.ContentAdapterDelegateSelector
 import ru.altf000.adapterdepegates.databinding.FragmentMainBinding
 

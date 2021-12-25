@@ -215,7 +215,6 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 }
 ```
 
-
 ### 7. Result
 
 https://user-images.githubusercontent.com/31753662/147386896-082b06d2-fe80-4eba-a129-f17ca43fd695.mp4

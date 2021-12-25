@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import ru.altf000.adapterdelegates.adapterdelegates.CompositePagingAdapter
 import ru.altf000.adapterdelegates.adapterdelegates.createAdapter
 import ru.altf000.adapterdelegates.adapterdelegates.delegateSelector
 import ru.altf000.adapterdelegates.adapters.FooterAdapterDelegate
 import ru.altf000.adapterdelegates.adapters.HeaderAdapterDelegate
 import ru.altf000.adapterdelegates.adapters.content.ContentAdapterDelegateSelector
+import ru.altf000.adapterdelegates.utils.collectLatest
 import ru.altf000.adapterdepegates.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
@@ -19,6 +21,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
+    private lateinit var pagingAdapter: CompositePagingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +44,13 @@ class MainFragment : Fragment() {
             }
         ) {
             addAdapters(viewModel.list1, viewModel.list2, viewModel.list3)
-            addPagingAdapter(viewModel.pager)
+            pagingAdapter = addPagingAdapter(viewModel.pager).withNetworkStateAdapter()
+        }
+        pagingAdapter.loadingState.collectLatest(viewLifecycleOwner) { isLoading ->
+            binding.root.isRefreshing = isLoading
+        }
+        binding.root.setOnRefreshListener {
+            pagingAdapter.refresh()
         }
     }
 }

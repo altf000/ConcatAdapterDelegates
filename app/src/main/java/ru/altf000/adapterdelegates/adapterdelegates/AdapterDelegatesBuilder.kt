@@ -2,13 +2,13 @@ package ru.altf000.adapterdelegates.adapterdelegates
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import ru.altf000.adapterdelegates.adapters.NetworkStateAdapter
 import ru.altf000.adapterdelegates.utils.collectLatest
 
 fun createAdapter(
@@ -46,7 +46,6 @@ class AdapterDelegateBuilder(
 
     fun addPagingAdapter(
         items: Flow<PagingData<out DItem>>,
-        networkStateAdapter: LoadStateAdapter<*>? = null,
         onItemsLoadedAction: ((List<DItem>) -> Unit)? = null
     ): CompositePagingAdapter {
 
@@ -62,22 +61,25 @@ class AdapterDelegateBuilder(
         }
 
         pagingAdapter.onPagesUpdatedFlow.collectLatest(lifecycleOwner) {
-            onItemsLoadedAction?.let {
-                it(pagingAdapter.snapshot().items)
+            onItemsLoadedAction?.let { action ->
+                action(pagingAdapter.snapshot().items)
             }
         }
 
         with(concatAdapter) {
             addAdapter(pagingAdapter)
-            networkStateAdapter?.let {
-                pagingAdapter.addLoadStateListener { states ->
-                    networkStateAdapter.loadState = states.append
-                }
-                addAdapter(it)
-            }
         }
 
         return pagingAdapter
+    }
+
+    fun CompositePagingAdapter.withNetworkStateAdapter(): CompositePagingAdapter {
+        val networkStateAdapter = NetworkStateAdapter(this)
+        addLoadStateListener { states ->
+            networkStateAdapter.loadState = states.append
+        }
+        concatAdapter.addAdapter(networkStateAdapter)
+        return this
     }
 
     fun build() = concatAdapter

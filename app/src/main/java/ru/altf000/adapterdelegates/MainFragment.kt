@@ -41,9 +41,9 @@ class MainFragment : Fragment() {
             }
         ) {
             addAdapters(
-                viewModel.firstList,
-                viewModel.secondList,
-                viewModel.thirdList
+                viewModel.headerItems,
+                viewModel.contentItems,
+                viewModel.footerItems
             )
         }
     }

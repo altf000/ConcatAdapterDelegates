@@ -23,7 +23,7 @@ class MainViewModel : ViewModel() {
     val list1 = _list1.asStateFlow()
 
     private val _list2 = MutableStateFlow(
-        mutableListOf<AdapterDelegateItem>().apply {
+        mutableListOf<DItem>().apply {
             add(HeaderItem("List 2"))
             repeat(3) { add(ContentItem("${it + 1}")) }
             add(FooterItem)

@@ -13,7 +13,7 @@ A simple implementation of the Adapter Delegates pattern based on the Kotlin Flo
 
 ### 1. Create delegate item classes with a identifier and any data
 
-##### HeaderItem:
+HeaderItem:
 
 ```kotlin
 data class HeaderItem(val text: String) : DItem() {
@@ -22,7 +22,7 @@ data class HeaderItem(val text: String) : DItem() {
 }
 ```
 
-##### ContentItem:
+ContentItem:
 
 ```kotlin
 data class ContentItem(val text: String) : DItem() {
@@ -32,7 +32,7 @@ data class ContentItem(val text: String) : DItem() {
 
 ```
 
-##### FooterItem:
+FooterItem:
 
 ```kotlin
 object FooterItem : DItem() {
@@ -44,7 +44,7 @@ object FooterItem : DItem() {
 
 ### 2. Create delegate adapters and bind them with delegate items
 
-##### HeaderDelegate:
+HeaderDelegate:
 
 ```kotlin
 class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBinding>() {
@@ -65,7 +65,7 @@ class HeaderAdapterDelegate : AdapterDelegate<HeaderItem, LayoutItemHeaderBindin
 }
 ```
 
-##### ContentDelegate:
+ContentDelegate:
 
 ```kotlin
 class ContentAdapterDelegate1 : AdapterDelegate<ContentItem, LayoutItemContent1Binding>() {
@@ -88,7 +88,7 @@ class ContentAdapterDelegate1 : AdapterDelegate<ContentItem, LayoutItemContent1B
 
 > Note: Also create ContentAdapterDelegate2 and ContentAdapterDelegate3 which will display different view holders for the same class
 
-##### FooterDelegate:
+FooterDelegate:
 
 ```kotlin
 class FooterAdapterDelegate : AdapterDelegate<FooterItem, LayoutItemFooterBinding>() {
@@ -181,7 +181,7 @@ class PagingDataSource : PagingSource<Int, DItem>() {
 }
 ```
 
-##### And declare PagingData flow in the ViewModel
+And declare PagingData flow in the ViewModel
 
 ```kotlin
 val pager = Pager(

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import ru.altf000.adapterdelegates.adapters.NetworkStateAdapter
 import ru.altf000.adapterdelegates.utils.collectLatest
 
 fun createAdapter(

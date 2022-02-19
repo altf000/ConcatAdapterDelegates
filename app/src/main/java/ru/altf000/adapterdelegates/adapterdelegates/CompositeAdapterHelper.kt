@@ -20,11 +20,11 @@ class CompositeAdapterHelper(private val delegatesSelector: DSelector) {
     }
 
     fun attached(holder: BindingVH) {
-        getDelegate(holder.itemViewType).onAttached(holder.binding, holder.absoluteAdapterPosition)
+        getDelegate(holder.itemViewType).onAttached(holder.binding, holder.bindingAdapterPosition)
     }
 
     fun detached(holder: BindingVH) {
-        getDelegate(holder.itemViewType).onDetached(holder.binding, holder.absoluteAdapterPosition)
+        getDelegate(holder.itemViewType).onDetached(holder.binding, holder.bindingAdapterPosition)
     }
 
     fun recycled(holder: BindingVH) {

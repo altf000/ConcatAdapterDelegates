@@ -1,4 +1,4 @@
-package ru.altf000.adapterdelegates.adapters
+package ru.altf000.adapterdelegates.adapterdelegates
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
